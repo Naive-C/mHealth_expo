@@ -12,13 +12,12 @@ import {
     where,
     query } from "firebase/firestore"; 
 
-import Checkbox from 'expo-checkbox';
 
-const Answer_Psychology = (props) => {
+const Set_Answers = (props) => {
 
     return(
         <View>
-            <Text>Answer{props.idx + 1} : </Text>
+            <Text>Answer{props.idx + 1} : {props.array[props.idx][props.idx]}</Text>
         </View>
     );
 }
@@ -30,4 +29,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Answer_Psychology;
+export default Set_Answers;

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import ReadFromDB from './Components/ReadFromDB';
+import Home from './Screens/Home';
+import Questions from './Screens/Questions';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [addName, setAddName] = useState('');
@@ -72,43 +77,14 @@ export default function App() {
   }
 
   return (
-    <View>
-      <TextInput
-        placeholder="name"
-        value={addName}
-        onChangeText={setAddName}
-      />
-      <TextInput
-        placeholder="age"
-        value={addAge}
-        onChangeText={setAddAge}
-      />
-      <Button title="Add Text" onPress={addtoDB} />
-      <ReadFromDB/>
-      <Button title="Update Text" onPress={updateDB} />
-      <TextInput
-        placeholder="Updata ID"
-        value={id}
-        onChangeText={setID}
-      />
-      <TextInput
-        placeholder="name"
-        value={addName}
-        onChangeText={setAddName}
-      />
-      <TextInput
-        placeholder="age"
-        value={addAge}
-        onChangeText={setAddAge}
-      />
-      <Button title="Delete Text" onPress={deletefromDB} />
-      <TextInput
-        placeholder="Delete ID"
-        value={id}
-        onChangeText={setID}
-      />
-      
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name = "Home" component={Home} 
+          options={{title: 'User Info',}}
+         />
+        <Stack.Screen name = "Questions" component={Questions}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
