@@ -18,6 +18,33 @@ const firstInput = useRef();
 const secondInput = useRef();
 const thirdInput = useRef();
 
+const isTextInputEmpty = () => {
+    if(!firstName.trim()) {
+        alert('Please Enter First Name')
+        return;
+    }
+    if(!lastName.trim()) {
+        alert('Please Enter Last Name')
+        return;
+    }
+    if(!weight.trim()) {
+        alert('Please Enter Weight')
+        return;
+    }
+    if(!height.trim()) {
+        alert('Please Enter Height')
+        return;
+    }
+        userInfo.navigation.navigate("Questions", {
+        userFirstName: firstName,
+        userLastName: lastName,
+        userHeight: height,
+        userWeight: weight,
+        userGender: checkedGender,
+        userDepartment: selectedDepartment,
+    });
+}
+
     return(
         <View>
             <View>
@@ -27,7 +54,7 @@ const thirdInput = useRef();
                     value={firstName}
                     onChangeText={setFirstName}
                     placeholder="First Name"
-                    autoFocus = {false}
+                    autoFocus = {true}
                     returnKeyType='next'
                     onSubmitEditing={()=> firstInput.current.focus()}
                 />
@@ -36,7 +63,6 @@ const thirdInput = useRef();
                     value={lastName}
                     onChangeText={setLastName}
                     placeholder="Last Name"
-                    autoFocus = {true}
                     returnKeyType='next'
 
                     ref={firstInput}
@@ -119,7 +145,7 @@ const thirdInput = useRef();
             <View style={styles.card}>
                 <View style={styles.container}>
                     <View style={styles.checkboxContainer}>
-                        <Icon style={styles.icon} name="man" size={30} color="blue"/>
+                        <Icon style={styles.icon} name="man" size={25} color="blue"/>
                         <Text style={styles.genderLabel}>Male</Text>
                         <RadioButton
                             value ='Male'
@@ -130,7 +156,7 @@ const thirdInput = useRef();
                         />
                     </View>
                     <View style={styles.checkboxContainer}>
-                        <Icon style={styles.icon} name="woman" size={30} color="red"/>
+                        <Icon style={styles.icon} name="woman" size={25} color="red"/>
                         <Text style={styles.genderLabel}>Female</Text>
                         <RadioButton
                             value ='Female'
@@ -157,16 +183,7 @@ const thirdInput = useRef();
                 </View>
             </View>
             <View style={styles.submitCard}>
-                <Button title="Submit" color="white" onPress={()=>{
-                        userInfo.navigation.navigate("Questions", {
-                            userFirstName: firstName,
-                            userLastName: lastName,
-                            userHeight: height,
-                            userWeight: weight,
-                            userGender: checkedGender,
-                            userDepartment: selectedDepartment,
-                        });
-                    }}/>
+                <Button title="Submit" color="white" onPress={isTextInputEmpty}/>
             </View>
            
             
@@ -195,8 +212,10 @@ const styles = StyleSheet.create({
     },
     genderLabel: {
         margin: 8,
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: "600",
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     label: {
         marginHorizontal: 10,

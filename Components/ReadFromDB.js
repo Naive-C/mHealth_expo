@@ -42,15 +42,29 @@ const ReadFromDB = (onSelectedDepartment) => {
         }
     }
 
-    const onToggle = (id, question) => async e =>{
-        const data = await getDocs(collection(db, "Question",Object.values(onSelectedDepartment).toString(), "Q1"))
-        setQuestions(data.docs.map(doc => doc.id === id ? {...doc.data(), id: doc.id, checked: !doc.checked} : doc));
-        console.log(Questions)
-        test(id, question)
-    };
+    const addtoDB = async ()=>{
+        try{
+          await addDoc(collection(db, "user" ), {
+            FirstName: userFirstName,
+            LastName: userLastName,
+            Height: userHeight,
+            Weight: userWeight,
+            Gender: userGender,
+            createdAt: new Date(),
+          });
+          alert("Added!!")
+          }catch(error){
+            console.log(error.message)
+          }
+      }
 
     const test = (answer, question) => e => {
         console.log(question + " : " + answer)
+        addtoDB
+    }
+
+    const setColor =() => {
+
     }
 
     return(
@@ -59,17 +73,17 @@ const ReadFromDB = (onSelectedDepartment) => {
             return (
                 <>
                     <Text style={styles.question}>{question.id}</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.answer} onPress={test(Questions[idx][0], question.id)}>{Questions[idx][0]}</Text>
+                    <TouchableOpacity style={styles.card} onPress={test(Questions[idx][0], question.id)}>
+                        <Text style={styles.answer}>{Questions[idx][0]}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Text style={styles.answer} onPress={test(Questions[idx][1], question.id)}>{Questions[idx][1]}</Text>
+                    <TouchableOpacity style={styles.card} onPress={test(Questions[idx][1], question.id)}>
+                        <Text style={styles.answer}>{Questions[idx][1]}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Text style={styles.answer} onPress={test(Questions[idx][2], question.id)}>{Questions[idx][2]}</Text>
+                    <TouchableOpacity style={styles.card} onPress={test(Questions[idx][2], question.id)}>
+                        <Text style={styles.answer}>{Questions[idx][2]}</Text>
                     </TouchableOpacity>   
-                    <TouchableOpacity>
-                        <Text style={styles.answer} onPress={test(Questions[idx][3], question.id)}>{Questions[idx][3]}</Text>
+                    <TouchableOpacity style={styles.card} onPress={test(Questions[idx][3], question.id)}>
+                        <Text style={styles.answer}>{Questions[idx][3]}</Text>
                     </TouchableOpacity>
 
                     
@@ -84,11 +98,31 @@ const ReadFromDB = (onSelectedDepartment) => {
 
 const styles = StyleSheet.create({
     question: {
-        fontSize: 30,
+        marginHorizontal: 15,
+        fontWeight: "600",
+        fontSize: 20
+    },
+    card: {
+        backgroundColor: 'white',
+        shadowColor: 'black',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderRadius: 10,
+        padding: 20,
+        marginBottom: 10,
+        marginHorizontal: 10,
     },
     answer: {
-        fontSize: 20,
-        marginTop: 8,
+        fontSize: 15,
+    },
+    selectedAnswer :{
+        fontSize: 15,
+        color: 'red',
     },
 })
 

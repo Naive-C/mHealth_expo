@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, Button, TextInput, View, StyleSheet, ScrollView} from 'react-native';
 import  {db}  from '../firebaseConfig';
 import { 
@@ -16,6 +16,10 @@ import ReadFromDB from '../Components/ReadFromDB';
 import Set_Questions from '../Components/Set_Questions';
 
 const Questions = (userInfo) => {
+
+  useEffect(() => {
+    addtoDB();
+}, []);
 
   const addtoDB = async ()=>{
     try{
@@ -49,7 +53,7 @@ const Questions = (userInfo) => {
       <Text>User Weight : {JSON.stringify(userWeight)}</Text>
       <Text>User Gender : {JSON.stringify(userGender)}</Text>
       <Text>User Gender : {JSON.stringify(userDepartment)}</Text> */}
-        <ReadFromDB onSelectedDepartment={userDepartment} />
+        <ReadFromDB onSelectedDepartment={userDepartment}/>
     </View>       
   );
 }
