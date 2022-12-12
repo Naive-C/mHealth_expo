@@ -23,15 +23,15 @@ const Questions = (userInfo) => {
 
   const addtoDB = async ()=>{
     try{
-      await addDoc(collection(db, "user" ), {
+      await addDoc(collection(db, "user"), {
         FirstName: userFirstName,
         LastName: userLastName,
         Height: userHeight,
         Weight: userWeight,
         Gender: userGender,
+        Department: userDepartment,
         createdAt: new Date(),
       });
-      alert("Added!!")
       }catch(error){
         console.log(error.message)
       }

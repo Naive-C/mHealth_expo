@@ -82,7 +82,7 @@ export default function App() {
         <Stack.Screen name = "Home" component={Home} 
           options={{title: 'User Info',}}
          />
-        <Stack.Screen name = "Questions" component={Questions}/>
+         <Stack.Screen name = "Questions" component={Questions}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

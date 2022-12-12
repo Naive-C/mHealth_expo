@@ -19,22 +19,22 @@ const secondInput = useRef();
 const thirdInput = useRef();
 
 const isTextInputEmpty = () => {
-    if(!firstName.trim()) {
-        alert('Please Enter First Name')
-        return;
-    }
-    if(!lastName.trim()) {
-        alert('Please Enter Last Name')
-        return;
-    }
-    if(!weight.trim()) {
-        alert('Please Enter Weight')
-        return;
-    }
-    if(!height.trim()) {
-        alert('Please Enter Height')
-        return;
-    }
+    // if(!firstName.trim()) {
+    //     alert('Please Enter First Name')
+    //     return;
+    // }
+    // if(!lastName.trim()) {
+    //     alert('Please Enter Last Name')
+    //     return;
+    // }
+    // if(!weight.trim()) {
+    //     alert('Please Enter Weight')
+    //     return;
+    // }
+    // if(!height.trim()) {
+    //     alert('Please Enter Height')
+    //     return;
+    // }
         userInfo.navigation.navigate("Questions", {
         userFirstName: firstName,
         userLastName: lastName,
