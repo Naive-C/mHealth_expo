@@ -1,42 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import  {db}  from '../firebaseConfig';
 import { ScrollView } from 'react-native-gesture-handler';
 import {View, TextInput, Button, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import  {db}  from '../firebaseConfig';
 import { addDoc, collection, getDoc, doc,} from "firebase/firestore"; 
 
-const SetQuestion = (userDepartment) => {
+const SetQuestion = ({Questions, selected, setSelected, filled, setFilled, temp, setTemp, onUpdateAnswerDB}) => {
 
-    const[Questions, setQuestions] = useState({});
-    const[selected, setSelected] = useState([]);
-    const[filled, setFilled] = useState([]);
-    const[temp, setTemp] = useState("");
+    //const[Questions, setQuestions] = useState({});
+    // const[selected, setSelected] = useState([]);
+    // const[filled, setFilled] = useState([]);
+    // const[temp, setTemp] = useState("");
 
     useEffect(() => {
-        console.log(Object.values(userDepartment).toString())
-        readfromDB();
+        //console.log(Object.values(userDepartment).toString())
+        //readfromDB();
     }, []);
 
-    const readfromDB = async () =>{
-        try{
-            const data = await getDoc(doc(db, "Question" ,Object.values(userDepartment).toString()))
-            setQuestions(data.data())
+    // const readfromDB = async () =>{
+    //     try{
+    //         const data = await getDoc(doc(db, "Question" ,Object.values(userDepartment).toString()))
+    //         setQuestions(data.data())
 
-        }catch(error){
-            console.log(error.message)
-        }
+    //     }catch(error){
+    //         console.log(error.message)
+    //     }
+    // }
+
+
+    const answerSendtoDB = () => {
+        onUpdateAnswerDB(filled, selected)
     }
-
-    const answerSendtoDB = async (filled, selected) => {
-        try{
-            await addDoc(collection(db, "answer" ), {
-                question: question,
-                answer: answer,
-              });
-          }catch(error){
-            //console.log(error.message)
-          }
-      }
 
     const saveSelectedAnswer = (question, answer, number) => e => {
         console.log(question + " : " + answer)
@@ -45,7 +39,6 @@ const SetQuestion = (userDepartment) => {
             [question]: number
         }))
         console.log(selected)
-
     }
 
     const saveFilledText = (question, answer) => e => {
@@ -54,7 +47,7 @@ const SetQuestion = (userDepartment) => {
             ...prevQuestions,
             [question] : answer
         }))
-        onsole.log(filled)
+        console.log(filled)
     }
 
     return(
@@ -93,7 +86,10 @@ const SetQuestion = (userDepartment) => {
                     )}
                 </View>
             ))}
-            <Button title="Submit" onPress={answerSendtoDB(filled, selected)}/>
+            <Button title="Submit" onPress={answerSendtoDB}/>
+            <TouchableOpacity onPress={answerSendtoDB(filled, selected)}>
+                <Text>submit</Text>
+            </TouchableOpacity>
         </ScrollView>
         </KeyboardAvoidingView>
     );

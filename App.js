@@ -9,8 +9,6 @@ import Questions from './Screens/Questions';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [addName, setAddName] = useState('');
-  const [addAge, setAddAge] = useState('');
   const [id, setID] = useState('');
 
   const deletefromDB = async ()=>{
