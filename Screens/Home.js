@@ -4,17 +4,7 @@ import { RadioButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import  {Picker}  from '@react-native-picker/picker';
 import  {db}  from '../firebaseConfig';
-import { 
-    addDoc, 
-    collection, 
-    getDocs,
-    getDoc,
-    doc,
-    updateDoc,
-    deleteDoc,  
-    where,
-    setDoc,
-    query } from "firebase/firestore"; 
+import { addDoc, collection,  } from "firebase/firestore"; 
 
 const Home = (userInfo) => {
 
@@ -30,6 +20,7 @@ const firstInput = useRef();
 const secondInput = useRef();
 const thirdInput = useRef();
 
+// 최초 앱 실행 시 DB에 사용자 인적사항을 DB에 저장. 모두 공백으로 저장됨
 useEffect(() => {
     addtoDB();
   }, []);
@@ -65,7 +56,7 @@ const isTextInputEmpty = () => {
 
 const addtoDB = async ()=>{
     try{
-      const docRef = await addDoc(collection(db, "user"), {
+      const docRef = await addDoc(collection(db, "User"), {
         FirstName: firstName,
         LastName: lastName,
         Height: height,

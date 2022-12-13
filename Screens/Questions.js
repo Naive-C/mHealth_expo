@@ -1,30 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {Text, Button, TextInput, View, StyleSheet, ScrollView} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet} from 'react-native';
 import  {db}  from '../firebaseConfig';
-import { 
-    addDoc, 
-    collection, 
-    getDocs,
-    getDoc,
-    doc,
-    updateDoc,
-    deleteDoc,  
-    where,
-    setDoc,
-    query } from "firebase/firestore"; 
+import { doc,updateDoc, } from "firebase/firestore"; 
 
-import ReadFromDB from '../Components/ReadFromDB';
-import Set_Questions from '../Components/Set_Questions';
+import SetQuestion from '../Components/SetQuestion';
 
 const Questions = (userInfo) => {
 
+  // Submit 버튼을 누를 때 마다 수정된 사항이 적용됨.
   useEffect(() => {
     updateDB(userId);
   }, []);
 
   const updateDB = async (id)=>{
     try{
-      const docRef = doc(db, "user", id);
+      const docRef = doc(db, "User", id);
       await updateDoc(docRef, {
         FirstName: userFirstName,
         LastName: userLastName,
@@ -55,7 +45,7 @@ const Questions = (userInfo) => {
       <Text>User Weight : {JSON.stringify(userWeight)}</Text>
       <Text>User Gender : {JSON.stringify(userGender)}</Text>
       <Text>User Gender : {JSON.stringify(userDepartment)}</Text> */}
-        <ReadFromDB onSelectedDepartment={userDepartment}/>
+        <SetQuestion onSelectedDepartment={userDepartment} onUserId={userId}/>
     </View>       
   );
 }

@@ -19,11 +19,9 @@ import {
 import Set_Questions from './Set_Questions';
 import Set_Answers from './Set_Answers';
 
-
-const ReadFromDB = (onSelectedDepartment) => {
+const SetQuestion = (onSelectedDepartment, onUserId) => {
 
     const[Questions, setQuestions] = useState({});
-    const[total, setTotal] = useState(0);
     const[selected, setSelected] = useState([]);
 
     useEffect(() => {
@@ -47,21 +45,19 @@ const ReadFromDB = (onSelectedDepartment) => {
     const readfromDB = async () =>{
         try{
             const data = await getDoc(doc(db, "Question" ,Object.values(onSelectedDepartment).toString()))
-            //setQuestions(data.docs.map(doc => ({...doc.data(), id: doc.id})));
-
             setQuestions(data.data())
 
             // data.forEach((doc) => {
             //     console.log(doc.id, '=>' ,doc.data())
             // });
-            //console.log(Questions)
-            //console.log(Object.values(Questions))
+            console.log(Questions)
+            console.log(Object.values(Questions))
         }catch(error){
             console.log(error.message)
         }
     }
 
-    const updateDB = async (answer, question)=>{
+    const answerSendtoDB = async (answer, question)=>{
         try{
             await addDoc(collection(db, "answer" ), {
                 question: question,
@@ -80,7 +76,6 @@ const ReadFromDB = (onSelectedDepartment) => {
             [question]: number
         }))
         console.log(selected)
-        //updateDB(answer, question)
     }
 
     return(
@@ -88,27 +83,25 @@ const ReadFromDB = (onSelectedDepartment) => {
 
             {Object.entries(Questions).map(([question, answer]) => (
                 <View>
-                    <Text style={styles.question}>{question}</Text>
+                    <Text style={styles.questionLabel}>{question}</Text>
                     {Object.entries(answer)
-                        //.filter(([key]) => key !=='type') <- key가 'type' 이면 제외, 현재는 쓰이지 않지만 추후 응용 가능
+                        //.filter(([key]) => key !=='type') // <- key가 'type' 이면 제외, 현재는 쓰이지 않지만 추후 응용 가능
                         .map(([key, value]) => { // key : 1, 2, type
                             switch(value) {
                                 case 'textinput':
                                     return <TextInput style={styles.card} placeholder="Fill Out Blank"/>;
                                 default:
                                     return (
-                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selected]} onPress={test(value, question, key)}>
-                                            <Text style={styles.answer}>{value}</Text> 
+                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selectedCard]} onPress={test(value, question, key)}>
+                                            <Text style={[styles.answerLabel, selected[question] === key && styles.selectedAnswerLabel]}>{value}</Text> 
                                         </TouchableOpacity>
                                     );
-                                    
-      
                             }
                         }
                     )}
                 </View>
             ))}
-            
+            <Button title="Submit"/>
             {/* {Questions?.map((question, questionIdx) => {
             return (
                 <>
@@ -142,7 +135,7 @@ const ReadFromDB = (onSelectedDepartment) => {
 }
 
 const styles = StyleSheet.create({
-    question: {
+    questionLabel: {
         marginHorizontal: 15,
         fontWeight: "600",
         fontSize: 20
@@ -162,7 +155,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginHorizontal: 10,
     },
-    selected: {
+    selectedCard: {
       backgroundColor: 'green',
       shadowColor: 'green',
         shadowOffset: {
@@ -179,7 +172,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginHorizontal: 10,  
     },
-    answer: {
+    selectedAnswerLabel: {
+        color: 'white',
+        fontWeight: '600',
+    },
+    answerLabel: {
         fontSize: 15,
     },
     container: {
@@ -189,4 +186,4 @@ const styles = StyleSheet.create({
       },
 })
 
-export default ReadFromDB;
+export default SetQuestion;
