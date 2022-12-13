@@ -1,87 +1,69 @@
 import React, {useEffect, useState} from 'react';
 import  {db}  from '../firebaseConfig';
 import { ScrollView } from 'react-native-gesture-handler';
-import {View, TextInput, Button, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, TextInput, Button, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { 
-    addDoc, 
-    collection, 
-    getDocs,
-    getCountFromServer,
-    getDoc,
-    doc,
-    updateDoc,
-    deleteDoc,  
-    where,
-    query, 
-    QuerySnapshot} from "firebase/firestore"; 
+import { addDoc, collection, getDoc, doc,} from "firebase/firestore"; 
 
-import Set_Questions from './Set_Questions';
-import Set_Answers from './Set_Answers';
-
-const SetQuestion = (onSelectedDepartment, onUserId) => {
+const SetQuestion = (userDepartment) => {
 
     const[Questions, setQuestions] = useState({});
     const[selected, setSelected] = useState([]);
+    const[filled, setFilled] = useState([]);
+    const[temp, setTemp] = useState("");
 
     useEffect(() => {
+        console.log(Object.values(userDepartment).toString())
         readfromDB();
     }, []);
 
-    // const readfromDB = async () =>{
-    //     try{
-    //         const data = await getDocs(collection(db, "Question",Object.values(onSelectedDepartment).toString(), "Q1"))
-    //         setQuestions(data.docs.map(doc => ({...doc.data(), id: doc.id})));
-
-    //         data.forEach((doc) => {
-    //             console.log(doc.id, '=>' ,doc.data())
-    //         });
-    //         console.log(Questions)
-    //     }catch(error){
-    //         console.log(error.message)
-    //     }
-    // }
-
     const readfromDB = async () =>{
         try{
-            const data = await getDoc(doc(db, "Question" ,Object.values(onSelectedDepartment).toString()))
+            const data = await getDoc(doc(db, "Question" ,Object.values(userDepartment).toString()))
             setQuestions(data.data())
 
-            // data.forEach((doc) => {
-            //     console.log(doc.id, '=>' ,doc.data())
-            // });
-            console.log(Questions)
-            console.log(Object.values(Questions))
         }catch(error){
             console.log(error.message)
         }
     }
 
-    const answerSendtoDB = async (answer, question)=>{
+    const answerSendtoDB = async (filled, selected) => {
         try{
             await addDoc(collection(db, "answer" ), {
                 question: question,
                 answer: answer,
               });
-              console.log(Questions[2])
           }catch(error){
-            console.log(error.message)
+            //console.log(error.message)
           }
       }
 
-    const test = (answer, question, number) => e => {
+    const saveSelectedAnswer = (question, answer, number) => e => {
         console.log(question + " : " + answer)
-        setSelected(prevState => ({
-            ...prevState,
+        setSelected(prevQuestions => ({
+            ...prevQuestions,
             [question]: number
         }))
         console.log(selected)
+
+    }
+
+    const saveFilledText = (question, answer) => e => {
+        console.log(question + " : " + answer)
+        setFilled(prevQuestions => ({
+            ...prevQuestions,
+            [question] : answer
+        }))
+        onsole.log(filled)
     }
 
     return(
+        <KeyboardAvoidingView
+            behavior={'padding'}
+            keyboardVerticalOffset = {100}          
+        >
         <ScrollView>
-
-            {Object.entries(Questions).map(([question, answer]) => (
+            {Object?.entries(Questions).map(([question, answer]) => (
                 <View>
                     <Text style={styles.questionLabel}>{question}</Text>
                     {Object.entries(answer)
@@ -89,10 +71,20 @@ const SetQuestion = (onSelectedDepartment, onUserId) => {
                         .map(([key, value]) => { // key : 1, 2, type
                             switch(value) {
                                 case 'textinput':
-                                    return <TextInput style={styles.card} placeholder="Fill Out Blank"/>;
+                                    return (
+                                            <TextInput 
+                                                style={styles.inputContainer}
+                                                placeholder="Blank"
+                                                returnKeyType="done"
+                                                value={filled}
+                                                onChangeText={setTemp}
+                                                onSubmitEditing={saveFilledText(question, temp)}
+                                                />
+                                        
+                                    );            
                                 default:
                                     return (
-                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selectedCard]} onPress={test(value, question, key)}>
+                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selectedCard]} onPress={saveSelectedAnswer(question, value, key)}>
                                             <Text style={[styles.answerLabel, selected[question] === key && styles.selectedAnswerLabel]}>{value}</Text> 
                                         </TouchableOpacity>
                                     );
@@ -101,45 +93,13 @@ const SetQuestion = (onSelectedDepartment, onUserId) => {
                     )}
                 </View>
             ))}
-            <Button title="Submit"/>
-            {/* {Questions?.map((question, questionIdx) => {
-            return (
-                <>
-                    <Set_Questions question={question.id} idx={questionIdx} array={Questions} />
-                    {Questions?.map((answer, answerIdx) => {
-                        return(
-                            <Set_Answers answer={answer.id} idx={answerIdx}/>
-                        )
-                    })}
-                    
-                     <Text style={styles.question}>{question.id}</Text>
-                    
-                    <TouchableOpacity style={[styles.card, selected[question.id] === 0 && styles.selected]} onPress={test(Questions[idx][0], question.id, 0)}>
-                        <Text style={styles.answer}>{Questions[idx][0]}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.card, selected[question.id] === 1 && styles.selected]} onPress={test(Questions[idx][1], question.id, 1)}>
-                        <Text style={styles.answer}>{Questions[idx][1]}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.card, selected[question.id] === 2 && styles.selected]} onPress={test(Questions[idx][2], question.id, 2)}>
-                        <Text style={styles.answer}>{Questions[idx][2]}</Text>
-                    </TouchableOpacity>   
-                    <TouchableOpacity style={[styles.card, selected[question.id] === 3 && styles.selected]} onPress={test(Questions[idx][3], question.id, 3)}>
-                        <Text style={styles.answer}>{Questions[idx][3]}</Text>
-                    </TouchableOpacity> 
-                    
-                 </>
-                );
-            })} */}
+            <Button title="Submit" onPress={answerSendtoDB(filled, selected)}/>
         </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
-    questionLabel: {
-        marginHorizontal: 15,
-        fontWeight: "600",
-        fontSize: 20
-    },
     card: {
         backgroundColor: 'white',
         shadowColor: 'black',
@@ -176,8 +136,35 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '600',
     },
+    questionLabel: {
+        marginHorizontal: 15,
+        fontWeight: "600",
+        fontSize: 20,
+        marginVertical: 10,
+    },
     answerLabel: {
         fontSize: 15,
+    },
+    inputContainer: {
+        backgroundColor: 'white',
+        shadowColor: 'black',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderRadius: 10,
+        padding: 20,
+        paddingTop: 20,
+        marginTop: 5,
+        marginBottom: 15,
+        marginHorizontal: 10,
+        flex: 1,
+    },
+    input:{
+        width:'100%',
     },
     container: {
         flex: 1,

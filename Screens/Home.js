@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {Text, Button, TextInput, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {Text, Button, TextInput, View, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, Alert} from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import  {Picker}  from '@react-native-picker/picker';
@@ -71,8 +71,11 @@ const addtoDB = async ()=>{
   }
 
     return(
-        <View>
-            <View>
+        <KeyboardAvoidingView
+            behavior={'padding'}
+            keyboardVerticalOffset = {100}    
+        >
+        <ScrollView>
                 {/* 이름 */}
                 <Text style={styles.label}>Name</Text>
                 <TextInput
@@ -95,9 +98,6 @@ const addtoDB = async ()=>{
                     ref={firstInput}
                     onSubmitEditing={()=> secondInput.current.focus()}
                 />
-            </View>
-            
-            <View>
                 {/* 키 */}
                 <Text style={styles.label}>Height</Text>
                 <TextInput
@@ -112,9 +112,6 @@ const addtoDB = async ()=>{
                     ref={secondInput}
                     onSubmitEditing={()=> thirdInput.current.focus()}
                 />
-            </View>
-            
-            <View>
                 {/* 몸무게 */}
                 <Text style={styles.label}>Weight</Text>
                 <TextInput
@@ -128,7 +125,6 @@ const addtoDB = async ()=>{
 
                     ref={thirdInput}
                 />
-            </View>
             {/* 성별 */}
             <Text style={styles.label}>Gender</Text>
             <View style={styles.card}>
@@ -176,9 +172,8 @@ const addtoDB = async ()=>{
             <View style={styles.submitCard}>
                 <Button title="Submit" color="white" onPress={isTextInputEmpty}/>
             </View>
-           
-            
-        </View>       
+        </ScrollView>
+        </KeyboardAvoidingView>       
     );
 }
 

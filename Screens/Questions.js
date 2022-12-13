@@ -45,7 +45,7 @@ const Questions = (userInfo) => {
       <Text>User Weight : {JSON.stringify(userWeight)}</Text>
       <Text>User Gender : {JSON.stringify(userGender)}</Text>
       <Text>User Gender : {JSON.stringify(userDepartment)}</Text> */}
-        <SetQuestion onSelectedDepartment={userDepartment} onUserId={userId}/>
+      <SetQuestion userDepartment={userDepartment}/>
     </View>       
   );
 }
