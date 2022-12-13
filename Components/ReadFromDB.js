@@ -90,7 +90,7 @@ const ReadFromDB = (onSelectedDepartment) => {
                 <View>
                     <Text style={styles.question}>{question}</Text>
                     {Object.entries(answer)
-                        //.filter(([key]) => key !=='type')
+                        //.filter(([key]) => key !=='type') <- key가 'type' 이면 제외, 현재는 쓰이지 않지만 추후 응용 가능
                         .map(([key, value]) => { // key : 1, 2, type
                             switch(value) {
                                 case 'textinput':

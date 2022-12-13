@@ -10,6 +10,7 @@ import {
     updateDoc,
     deleteDoc,  
     where,
+    setDoc,
     query } from "firebase/firestore"; 
 
 import ReadFromDB from '../Components/ReadFromDB';
@@ -18,23 +19,23 @@ import Set_Questions from '../Components/Set_Questions';
 const Questions = (userInfo) => {
 
   useEffect(() => {
-    //addtoDB();
+    updateDB(userId);
   }, []);
 
-  const addtoDB = async ()=>{
+  const updateDB = async (id)=>{
     try{
-      await addDoc(collection(db, "user"), {
+      const docRef = doc(db, "user", id);
+      await updateDoc(docRef, {
         FirstName: userFirstName,
         LastName: userLastName,
         Height: userHeight,
         Weight: userWeight,
         Gender: userGender,
         Department: userDepartment,
-        createdAt: new Date(),
       });
-      }catch(error){
-        console.log(error.message)
-      }
+    }catch(error){
+      console.log(error.message)
+    }
   }
 
   const {params} = userInfo.route
@@ -44,6 +45,7 @@ const Questions = (userInfo) => {
   const userWeight = params? params.userWeight:null;
   const userGender = params? params.userGender:null;
   const userDepartment = params? params.userDepartment:null
+  const userId = params? params.userId:null
 
   return(
     <View>

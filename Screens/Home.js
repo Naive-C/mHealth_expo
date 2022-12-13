@@ -1,8 +1,20 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Text, Button, TextInput, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import  {Picker}  from '@react-native-picker/picker';
+import  {db}  from '../firebaseConfig';
+import { 
+    addDoc, 
+    collection, 
+    getDocs,
+    getDoc,
+    doc,
+    updateDoc,
+    deleteDoc,  
+    where,
+    setDoc,
+    query } from "firebase/firestore"; 
 
 const Home = (userInfo) => {
 
@@ -11,14 +23,19 @@ const [lastName, setLastName] = useState("");
 const [height, setHeight] = useState("");
 const [weight, setWeight] = useState("");
 const [checkedGender, setCheckedGender] = useState('Male');
-const [checkedRace, setCheckedRace] = useState([]);
 const [selectedDepartment, setSelectedDepartment] = useState("Nurse");
+const [userId, setUserId] = useState("")
 
 const firstInput = useRef();
 const secondInput = useRef();
 const thirdInput = useRef();
 
+useEffect(() => {
+    addtoDB();
+  }, []);
+
 const isTextInputEmpty = () => {
+    // 사용자가 입력하지 않을 시 다음 화면으로 넘어가지지 않음
     // if(!firstName.trim()) {
     //     alert('Please Enter First Name')
     //     return;
@@ -36,18 +53,36 @@ const isTextInputEmpty = () => {
     //     return;
     // }
         userInfo.navigation.navigate("Questions", {
-        userFirstName: firstName,
-        userLastName: lastName,
-        userHeight: height,
-        userWeight: weight,
-        userGender: checkedGender,
-        userDepartment: selectedDepartment,
+            userFirstName: firstName,
+            userLastName: lastName,
+            userHeight: height,
+            userWeight: weight,
+            userGender: checkedGender,
+            userDepartment: selectedDepartment,
+            userId: userId,
     });
 }
+
+const addtoDB = async ()=>{
+    try{
+      const docRef = await addDoc(collection(db, "user"), {
+        FirstName: firstName,
+        LastName: lastName,
+        Height: height,
+        Weight: weight,
+        Gender: checkedGender,
+        Department: selectedDepartment,
+      });
+      setUserId(docRef.id)
+      }catch(error){
+        console.log(error.message)
+      }
+  }
 
     return(
         <View>
             <View>
+                {/* 이름 */}
                 <Text style={styles.label}>Name</Text>
                 <TextInput
                     style={styles.card}
@@ -56,8 +91,9 @@ const isTextInputEmpty = () => {
                     placeholder="First Name"
                     autoFocus = {true}
                     returnKeyType='next'
-                    onSubmitEditing={()=> firstInput.current.focus()}
+                    onSubmitEditing={()=> firstInput.current.focus()}   // 작성이 완료되면 'firstInput'이라는 ref를 가지는 TextInput으로 넘어감
                 />
+                {/* 성 */}
                 <TextInput
                     style={styles.card}
                     value={lastName}
@@ -71,6 +107,7 @@ const isTextInputEmpty = () => {
             </View>
             
             <View>
+                {/* 키 */}
                 <Text style={styles.label}>Height</Text>
                 <TextInput
                     style={styles.card}
@@ -87,6 +124,7 @@ const isTextInputEmpty = () => {
             </View>
             
             <View>
+                {/* 몸무게 */}
                 <Text style={styles.label}>Weight</Text>
                 <TextInput
                     style={styles.card}
@@ -100,52 +138,13 @@ const isTextInputEmpty = () => {
                     ref={thirdInput}
                 />
             </View>
-            
-            {/* <Text>Race: </Text>
-            <TouchableOpacity>
-                <View>
-                    <Icon name=""/>
-                </View>
-            </TouchableOpacity>
-            <View style={styles.container}>
-                <View style={styles.checkboxContainer}>
-                    <Checkbox
-                        value={isAsian}
-                        onValueChange={setAsian}
-                        style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>Asian</Text>
-                    <Checkbox
-                        value={isBlack}
-                        onValueChange={setBlack}
-                        style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>Black</Text>
-                    <Checkbox
-                        value={isWhite}
-                        onValueChange={setWhite}
-                        style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>White</Text>
-                    <Checkbox
-                        value={isHispanic}
-                        onValueChange={setHispanic}
-                        style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>Hispanic</Text>
-                    <Checkbox
-                        value={isOtherRace}
-                        onValueChange={setOtherRace}
-                        style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>Other</Text>
-                </View>
-            </View> */}
+            {/* 성별 */}
             <Text style={styles.label}>Gender</Text>
             <View style={styles.card}>
                 <View style={styles.container}>
                     <View style={styles.checkboxContainer}>
                         <Icon style={styles.icon} name="man" size={25} color="blue"/>
+                        {/* 남성 */}
                         <Text style={styles.genderLabel}>Male</Text>
                         <RadioButton
                             value ='Male'
@@ -157,6 +156,7 @@ const isTextInputEmpty = () => {
                     </View>
                     <View style={styles.checkboxContainer}>
                         <Icon style={styles.icon} name="woman" size={25} color="red"/>
+                        {/* 여성 */}
                         <Text style={styles.genderLabel}>Female</Text>
                         <RadioButton
                             value ='Female'
@@ -166,7 +166,7 @@ const isTextInputEmpty = () => {
                     </View>
                 </View>
             </View>
-
+            {/* 학과 */}
             <Text style={styles.label}>Department</Text>
             <View style={styles.card}>
                 <View>
