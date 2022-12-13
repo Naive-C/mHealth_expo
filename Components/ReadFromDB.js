@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import  {db}  from '../firebaseConfig';
+import { ScrollView } from 'react-native-gesture-handler';
 import {View, TextInput, Button, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { 
@@ -17,27 +18,44 @@ import {
 
 import Set_Questions from './Set_Questions';
 import Set_Answers from './Set_Answers';
-import { ScrollView } from 'react-native-gesture-handler';
+
 
 const ReadFromDB = (onSelectedDepartment) => {
 
-    const[Questions, setQuestions] = useState();
+    const[Questions, setQuestions] = useState({});
     const[total, setTotal] = useState(0);
-    const [selected, setSelected] = useState([]);
+    const[selected, setSelected] = useState([]);
 
     useEffect(() => {
         readfromDB();
     }, []);
 
+    // const readfromDB = async () =>{
+    //     try{
+    //         const data = await getDocs(collection(db, "Question",Object.values(onSelectedDepartment).toString(), "Q1"))
+    //         setQuestions(data.docs.map(doc => ({...doc.data(), id: doc.id})));
+
+    //         data.forEach((doc) => {
+    //             console.log(doc.id, '=>' ,doc.data())
+    //         });
+    //         console.log(Questions)
+    //     }catch(error){
+    //         console.log(error.message)
+    //     }
+    // }
+
     const readfromDB = async () =>{
         try{
-            const data = await getDocs(collection(db, "Question",Object.values(onSelectedDepartment).toString(), "Q1"))
-            setQuestions(data.docs.map(doc => ({...doc.data(), id: doc.id})));
+            const data = await getDoc(doc(db, "Question" ,Object.values(onSelectedDepartment).toString()))
+            //setQuestions(data.docs.map(doc => ({...doc.data(), id: doc.id})));
 
-            data.forEach((doc) => {
-                console.log(doc.id, '=>' ,doc.data())
-            });
-            console.log(Questions)
+            setQuestions(data.data())
+
+            // data.forEach((doc) => {
+            //     console.log(doc.id, '=>' ,doc.data())
+            // });
+            //console.log(Questions)
+            //console.log(Object.values(Questions))
         }catch(error){
             console.log(error.message)
         }
@@ -61,19 +79,48 @@ const ReadFromDB = (onSelectedDepartment) => {
             ...prevState,
             [question]: number
         }))
+        console.log(selected)
         //updateDB(answer, question)
-    }
-
-    const setColor =() => {
-
     }
 
     return(
         <ScrollView>
-            {Questions?.map((question, idx) => {
+
+            {Object.entries(Questions).map(([question, answer]) => (
+                <View>
+                    <Text style={styles.question}>{question}</Text>
+                    {Object.entries(answer)
+                        //.filter(([key]) => key !=='type')
+                        .map(([key, value]) => { // key : 1, 2, type
+                            switch(value) {
+                                case 'textinput':
+                                    return <TextInput style={styles.card} placeholder="Fill Out Blank"/>;
+                                default:
+                                    return (
+                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selected]} onPress={test(value, question, key)}>
+                                            <Text style={styles.answer}>{value}</Text> 
+                                        </TouchableOpacity>
+                                    );
+                                    
+      
+                            }
+                        }
+                    )}
+                </View>
+            ))}
+            
+            {/* {Questions?.map((question, questionIdx) => {
             return (
                 <>
-                    <Text style={styles.question}>{question.id}</Text>
+                    <Set_Questions question={question.id} idx={questionIdx} array={Questions} />
+                    {Questions?.map((answer, answerIdx) => {
+                        return(
+                            <Set_Answers answer={answer.id} idx={answerIdx}/>
+                        )
+                    })}
+                    
+                     <Text style={styles.question}>{question.id}</Text>
+                    
                     <TouchableOpacity style={[styles.card, selected[question.id] === 0 && styles.selected]} onPress={test(Questions[idx][0], question.id, 0)}>
                         <Text style={styles.answer}>{Questions[idx][0]}</Text>
                     </TouchableOpacity>
@@ -85,13 +132,11 @@ const ReadFromDB = (onSelectedDepartment) => {
                     </TouchableOpacity>   
                     <TouchableOpacity style={[styles.card, selected[question.id] === 3 && styles.selected]} onPress={test(Questions[idx][3], question.id, 3)}>
                         <Text style={styles.answer}>{Questions[idx][3]}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> 
                     
-                    {/* <Text>{Questions[idx][idx]}</Text> */}
-                    {/* <Set_Questions question={row.id} idx={idx} array={Questions}/> */}
-                </>
+                 </>
                 );
-            })}
+            })} */}
         </ScrollView>
     );
 }

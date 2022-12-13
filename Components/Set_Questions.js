@@ -5,19 +5,9 @@ import Set_Answers from './Set_Answers';
 
 const Set_Questions = (props) => {
 
-    const[Questions, setQuestions] = useState();
-    const[gender, setGender] = useState('');
-    const[name, setName] = useState('');
-    const[firstName, setFirstName] = useState('');
-    const[id, setID] = useState('');
-
-    const[isChecked, setChecked] = useState(false);
-
-    console.log("question: ", props.id)
-
     return(
         <View>
-            <Text>Question : {props.id}</Text>
+            <Text style={styles.question}>{props.question}</Text>
         </View>
     );
 }
@@ -26,6 +16,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'row',
+    },
+    question: {
+        marginHorizontal: 15,
+        fontWeight: "600",
+        fontSize: 20
     },
 });
 

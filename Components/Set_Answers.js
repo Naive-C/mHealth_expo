@@ -17,7 +17,7 @@ const Set_Answers = (props) => {
 
     return(
         <View>
-            <Text>Answer{props.idx + 1} : {props.array[props.idx][props.idx]}</Text>
+            <Text>{props.answer}</Text>
         </View>
     );
 }

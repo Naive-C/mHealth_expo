@@ -18,8 +18,8 @@ import Set_Questions from '../Components/Set_Questions';
 const Questions = (userInfo) => {
 
   useEffect(() => {
-    addtoDB();
-}, []);
+    //addtoDB();
+  }, []);
 
   const addtoDB = async ()=>{
     try{
