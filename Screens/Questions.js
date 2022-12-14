@@ -26,7 +26,7 @@ const Questions = (userInfo) => {
     }catch(error){
         console.log(error.message)
     }
-}
+  }
 
   const updateDB = async (id, filled, selected)=>{
     try{
@@ -48,8 +48,8 @@ const Questions = (userInfo) => {
     try{
       const docRef = doc(db, "User", userId);
       await updateDoc(docRef, {
-        Filled: filled,
-        Selected: selected,
+        _FilledAnswer: filled,
+        _SelectedAnswer: selected,
       });
     }catch(error){
       console.log(error.message)
@@ -67,12 +67,6 @@ const Questions = (userInfo) => {
 
   return(
     <View>
-      {/* <Text>User First Name : {JSON.stringify(userFirstName)}</Text>
-      <Text>User Last Name : {JSON.stringify(userLastName)}</Text>
-      <Text>User Height : {JSON.stringify(userHeight)}</Text>
-      <Text>User Weight : {JSON.stringify(userWeight)}</Text>
-      <Text>User Gender : {JSON.stringify(userGender)}</Text>
-      <Text>User Gender : {JSON.stringify(userDepartment)}</Text> */}
       <SetQuestion  Questions={Questions} onUpdateAnswerDB={updateAnswerDB} selected={selected} setSelected={setSelected} filled={filled} setFilled={setFilled} temp={temp} setTemp={setTemp}/>
     </View>       
   );

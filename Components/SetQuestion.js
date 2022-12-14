@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import {View, TextInput, Button, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
-import  {db}  from '../firebaseConfig';
-import { addDoc, collection, getDoc, doc,} from "firebase/firestore"; 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SetQuestion = ({Questions, selected, setSelected, filled, setFilled, temp, setTemp, onUpdateAnswerDB}) => {
 
@@ -30,13 +28,14 @@ const SetQuestion = ({Questions, selected, setSelected, filled, setFilled, temp,
 
     const answerSendtoDB = () => {
         onUpdateAnswerDB(filled, selected)
+        console.log("Done")
     }
 
-    const saveSelectedAnswer = (question, answer, number) => e => {
+    const saveSelectedAnswer = (question, answer) => e => {
         console.log(question + " : " + answer)
         setSelected(prevQuestions => ({
             ...prevQuestions,
-            [question]: number
+            [question]: answer
         }))
         console.log(selected)
     }
@@ -58,27 +57,33 @@ const SetQuestion = ({Questions, selected, setSelected, filled, setFilled, temp,
         <ScrollView>
             {Object?.entries(Questions).map(([question, answer]) => (
                 <View>
-                    <Text style={styles.questionLabel}>{question}</Text>
+                    {/*질문*/}
+                    <View style={styles.labelContainer }>
+                        <Icon name={"chat-question"} size={30}/>
+                        <Text style={styles.questionLabel}>{question}</Text>
+                    </View>
                     {Object.entries(answer)
-                        //.filter(([key]) => key !=='type') // <- key가 'type' 이면 제외, 현재는 쓰이지 않지만 추후 응용 가능
+                        //.filter(([key]) => key !=='type') // <- key가 'type' 이면 제외
                         .map(([key, value]) => { // key : 1, 2, type
                             switch(value) {
+                                /* 답변 */
                                 case 'textinput':
                                     return (
+                                        <View>
                                             <TextInput 
                                                 style={styles.inputContainer}
                                                 placeholder="Blank"
                                                 returnKeyType="done"
                                                 value={filled}
                                                 onChangeText={setTemp}
-                                                onSubmitEditing={saveFilledText(question, temp)}
+                                                onEndEditing={saveFilledText(question, temp)}
                                                 />
-                                        
+                                        </View>  
                                     );            
                                 default:
                                     return (
-                                        <TouchableOpacity style={[styles.card, selected[question] === key && styles.selectedCard]} onPress={saveSelectedAnswer(question, value, key)}>
-                                            <Text style={[styles.answerLabel, selected[question] === key && styles.selectedAnswerLabel]}>{value}</Text> 
+                                        <TouchableOpacity style={[styles.card, selected[question] === value && styles.selectedCard]} onPress={saveSelectedAnswer(question, value)}>
+                                            <Text style={[styles.answerLabel, selected[question] === value && styles.selectedAnswerLabel]}>{value}</Text> 
                                         </TouchableOpacity>
                                     );
                             }
@@ -86,9 +91,8 @@ const SetQuestion = ({Questions, selected, setSelected, filled, setFilled, temp,
                     )}
                 </View>
             ))}
-            <Button title="Submit" onPress={answerSendtoDB}/>
-            <TouchableOpacity onPress={answerSendtoDB(filled, selected)}>
-                <Text>submit</Text>
+            <TouchableOpacity style={styles.submitCard} onPress={answerSendtoDB}>
+                <Text style={styles.submitLabel}>Submit</Text>
             </TouchableOpacity>
         </ScrollView>
         </KeyboardAvoidingView>
@@ -111,9 +115,25 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginHorizontal: 10,
     },
+    submitCard: {
+        backgroundColor: '#111111',
+        shadowColor: '#111111',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderRadius: 10,
+        padding: 20,
+        marginBottom: 10,
+        marginHorizontal: 10,
+        fontWeight: "600",
+      },
     selectedCard: {
-      backgroundColor: 'green',
-      shadowColor: 'green',
+      backgroundColor: '#4ca64c',
+      shadowColor: '#4ca64c',
         shadowOffset: {
           width: 2,
           height: 5,
@@ -128,18 +148,24 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginHorizontal: 10,  
     },
-    selectedAnswerLabel: {
-        color: 'white',
-        fontWeight: '600',
-    },
     questionLabel: {
-        marginHorizontal: 15,
+        marginLeft: 5,
         fontWeight: "600",
         fontSize: 20,
         marginVertical: 10,
     },
     answerLabel: {
-        fontSize: 15,
+        fontSize: 17,
+    },
+    selectedAnswerLabel: {
+        color: 'white',
+        fontWeight: '700',
+    },
+    submitLabel: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: 'white',
+        textAlign: 'center',
     },
     inputContainer: {
         backgroundColor: 'white',
@@ -162,11 +188,13 @@ const styles = StyleSheet.create({
     input:{
         width:'100%',
     },
-    container: {
-        flex: 1,
+    labelContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
-      },
+        justifyContent: 'flexStart',
+        flexDirection: 'row',
+        marginHorizontal: 10,
+    },
+
 })
 
 export default SetQuestion;
