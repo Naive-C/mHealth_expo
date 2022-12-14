@@ -24,8 +24,8 @@ const thirdInput = useRef();
 
 // 최초 앱 실행 시 DB에 사용자 인적사항을 DB에 저장. 모두 공백으로 저장됨
 useEffect(() => {
-    addtoDB();
     readDepartment();
+    addtoDB();
   }, []);
 
 const isTextInputEmpty = () => {
